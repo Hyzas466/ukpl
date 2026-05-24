@@ -1,0 +1,33 @@
+{
+  "name": "techmart-ukpl",
+  "version": "1.0.0",
+  "description": "TechMart E-Commerce Checkout - Project UKPL Software Testing",
+  "scripts": {
+    "test": "jest --coverage",
+    "test:whitebox": "jest tests/whitebox/checkout.test.js --coverage --verbose",
+    "test:blackbox": "jest tests/blackbox/blackbox.test.js --verbose",
+    "test:stress": "jest tests/stress/stress.test.js --verbose",
+    "test:all": "jest --coverage --verbose"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "src/js/checkout.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

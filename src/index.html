@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TechMart - Sistem Checkout E-Commerce Premium. Project UKPL Software Testing.">
+  <title>TechMart - Premium Tech Accessories</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+</head>
+<body>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">Tech<span>Mart</span></div>
+    <div class="header-actions">
+      <div class="cart-toggle" id="cart-toggle">
+        🛒 Keranjang
+        <span class="cart-badge" id="cart-badge">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">✨ Free Shipping untuk belanja di atas Rp 1.500.000</div>
+    <h1>Premium Tech Accessories</h1>
+    <p>Temukan gadget terbaik dengan harga yang tak tertandingi</p>
+  </section>
+
+  <!-- Products -->
+  <section class="products-section">
+    <h2 class="section-title">🔥 Produk Kami</h2>
+    <div class="products-grid" id="products-grid"></div>
+  </section>
+
+  <!-- Cart Sidebar -->
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <h2>🛒 Keranjang</h2>
+      <button class="close-btn" id="close-cart">&times;</button>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer" id="cart-footer">
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal">Rp 0</span>
+      </div>
+      <div class="cart-summary-row total">
+        <span>Total Item</span>
+        <span id="cart-total-items">0 item</span>
+      </div>
+      <button class="btn-checkout" id="btn-checkout" disabled>Lanjut ke Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Checkout Modal -->
+  <div class="checkout-modal" id="checkout-modal">
+    <div class="overlay"></div>
+    <div class="checkout-content">
+      <div class="checkout-header">
+        <h2>📦 Checkout</h2>
+        <button class="close-btn" id="close-checkout">&times;</button>
+      </div>
+      <div class="checkout-body">
+        <form id="checkout-form" novalidate>
+
+          <!-- Buyer Info -->
+          <div class="form-section">
+            <h3>📋 Data Pembeli</h3>
+            <div class="form-group">
+              <label for="buyer-name">Nama Lengkap</label>
+              <input type="text" id="buyer-name" placeholder="Masukkan nama lengkap">
+              <span class="error-msg" id="error-name"></span>
+            </div>
+            <div class="form-group">
+              <label for="buyer-email">Email</label>
+              <input type="email" id="buyer-email" placeholder="contoh@email.com">
+              <span class="error-msg" id="error-email"></span>
+            </div>
+            <div class="form-group">
+              <label for="buyer-phone">Nomor Telepon</label>
+              <input type="tel" id="buyer-phone" placeholder="08xxxxxxxxxx">
+              <span class="error-msg" id="error-phone"></span>
+            </div>
+            <div class="form-group">
+              <label for="buyer-address">Alamat Lengkap</label>
+              <textarea id="buyer-address" placeholder="Masukkan alamat lengkap pengiriman" rows="3"></textarea>
+              <span class="error-msg" id="error-address"></span>
+            </div>
+          </div>
+
+          <!-- Shipping -->
+          <div class="form-section">
+            <h3>🚚 Pengiriman</h3>
+            <div class="form-group">
+              <label for="shipping-region">Region / Kota</label>
+              <select id="shipping-region">
+                <option value="">-- Pilih Region --</option>
+                <option value="jakarta">Jakarta</option>
+                <option value="bandung">Bandung</option>
+                <option value="surabaya">Surabaya</option>
+                <option value="yogyakarta">Yogyakarta</option>
+                <option value="semarang">Semarang</option>
+                <option value="medan">Medan</option>
+                <option value="bali">Bali</option>
+                <option value="makassar">Makassar</option>
+                <option value="balikpapan">Balikpapan</option>
+                <option value="jayapura">Jayapura</option>
+              </select>
+              <span class="error-msg" id="error-region"></span>
+            </div>
+            <div class="form-group">
+              <label for="shipping-method">Metode Pengiriman</label>
+              <select id="shipping-method">
+                <option value="">-- Pilih Metode --</option>
+                <option value="regular">Regular (3-5 hari)</option>
+                <option value="express">Express (1-2 hari)</option>
+                <option value="sameday">Same Day (hanya Jawa)</option>
+              </select>
+              <span class="error-msg" id="error-method"></span>
+            </div>
+          </div>
+
+          <!-- Coupon -->
+          <div class="form-section">
+            <h3>🏷️ Kupon Diskon</h3>
+            <div class="form-group">
+              <label for="coupon-code">Kode Kupon (opsional)</label>
+              <div class="coupon-row">
+                <input type="text" id="coupon-code" placeholder="Masukkan kode kupon">
+                <button type="button" class="btn-apply-coupon" id="btn-apply-coupon">Pakai</button>
+              </div>
+              <div class="coupon-status" id="coupon-status"></div>
+            </div>
+          </div>
+
+          <!-- Order Preview -->
+          <div class="form-section">
+            <h3>💰 Ringkasan Pesanan</h3>
+            <div class="order-preview" id="order-preview">
+              <div class="order-preview-item">
+                <span class="label">Subtotal</span>
+                <span id="preview-subtotal">Rp 0</span>
+              </div>
+              <div class="order-preview-item">
+                <span class="label">Diskon</span>
+                <span class="discount" id="preview-discount">- Rp 0</span>
+              </div>
+              <div class="order-preview-item">
+                <span class="label">Pajak (PPN)</span>
+                <span id="preview-tax">Rp 0</span>
+              </div>
+              <div class="order-preview-item">
+                <span class="label">Ongkos Kirim</span>
+                <span id="preview-shipping">Rp 0</span>
+              </div>
+              <div class="order-preview-item total">
+                <span>Grand Total</span>
+                <span id="preview-grand-total">Rp 0</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-process" id="btn-process">🔒 Proses Pesanan</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="success-modal" id="success-modal">
+    <div class="overlay"></div>
+    <div class="success-content">
+      <div class="success-icon">✅</div>
+      <h2>Pesanan Berhasil!</h2>
+      <p class="order-id" id="success-order-id"></p>
+      <div class="success-details" id="success-details"></div>
+      <button class="btn-new-order" id="btn-new-order">🛒 Belanja Lagi</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/checkout.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
