@@ -1,5 +1,6 @@
 // ============================================================
 // app.js - TechMart UI Controller (SPA + Sidebar Navigation)
+// Client-side Storage: localStorage untuk persistensi data
 // ============================================================
 
 (function () {
@@ -7,8 +8,41 @@
 
   const C = window.Checkout;
   const fmt = (n) => `Rp ${n.toLocaleString("id-ID")}`;
-  let cart = [];
-  let orderHistory = [];
+
+  // ===================== LOCAL STORAGE =====================
+  const STORAGE_KEYS = {
+    CART: "techmart_cart",
+    HISTORY: "techmart_order_history",
+    PAGE: "techmart_active_page",
+    BUYER: "techmart_buyer_data",
+  };
+
+  function saveToStorage(key, data) {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {
+      console.warn("localStorage save failed:", e);
+    }
+  }
+
+  function loadFromStorage(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (e) {
+      console.warn("localStorage load failed:", e);
+      return fallback;
+    }
+  }
+
+  function removeFromStorage(key) {
+    try { localStorage.removeItem(key); } catch (e) { /* ignore */ }
+  }
+
+  // Load persisted data
+  let cart = loadFromStorage(STORAGE_KEYS.CART, []);
+  let orderHistory = loadFromStorage(STORAGE_KEYS.HISTORY, []);
+  const savedPage = loadFromStorage(STORAGE_KEYS.PAGE, "dashboard");
 
   // ===================== NAVIGATION =====================
   const sidebar = document.getElementById("sidebar");
@@ -27,6 +61,9 @@
     navItems.forEach((n) => {
       if (n.dataset.page === pageName) n.classList.add("active");
     });
+
+    // Persist active page
+    saveToStorage(STORAGE_KEYS.PAGE, pageName);
 
     closeSidebar();
 
@@ -183,6 +220,9 @@
       cart.push({ productId, quantity: 1 });
     }
 
+    // Persist cart
+    saveToStorage(STORAGE_KEYS.CART, cart);
+
     // Button feedback
     const btn = document.querySelector(`.btn-add-cart[data-id="${productId}"]`);
     if (btn) {
@@ -272,6 +312,7 @@
           item.quantity--;
           if (item.quantity <= 0) cart = cart.filter((c) => c.productId !== id);
         }
+        saveToStorage(STORAGE_KEYS.CART, cart);
         renderCheckoutPage();
         updateCartBadge();
       });
@@ -281,6 +322,7 @@
     container.querySelectorAll(".btn-remove-item").forEach((btn) => {
       btn.addEventListener("click", () => {
         cart = cart.filter((c) => c.productId !== parseInt(btn.dataset.id));
+        saveToStorage(STORAGE_KEYS.CART, cart);
         renderCheckoutPage();
         updateCartBadge();
         showToast("Item dihapus dari keranjang", "info");
@@ -419,6 +461,9 @@
       buyer: result.buyer,
     });
 
+    // Persist order history
+    saveToStorage(STORAGE_KEYS.HISTORY, orderHistory);
+
     // Show success modal
     document.getElementById("success-order-id").textContent = result.orderId;
     document.getElementById("success-details").innerHTML = `
@@ -430,8 +475,9 @@
     `;
     document.getElementById("success-modal").classList.add("active");
 
-    // Reset cart
+    // Reset cart & persist
     cart = [];
+    saveToStorage(STORAGE_KEYS.CART, cart);
     document.getElementById("checkout-form").reset();
     document.getElementById("coupon-status").textContent = "";
     updateCartBadge();
@@ -490,6 +536,7 @@
       return;
     }
     orderHistory = [];
+    saveToStorage(STORAGE_KEYS.HISTORY, orderHistory);
     renderHistory();
     showToast("Riwayat pesanan dihapus", "success");
   });
@@ -558,5 +605,7 @@
   }
 
   // ===================== INIT =====================
-  renderDashboard();
+  // Restore last active page, or default to dashboard
+  navigateTo(savedPage);
+  updateCartBadge();
 })();
