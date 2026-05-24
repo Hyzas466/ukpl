@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "TechMart E-Commerce Checkout - Project UKPL Software Testing",
   "scripts": {
+    "dev": "live-server src --port=3000 --open",
     "test": "jest --coverage",
     "test:whitebox": "jest tests/whitebox/checkout.test.js --coverage --verbose",
     "test:blackbox": "jest tests/blackbox/blackbox.test.js --verbose",
@@ -28,6 +29,7 @@
     }
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "live-server": "^1.2.2"
   }
 }
