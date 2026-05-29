@@ -159,9 +159,7 @@ npm run test:stress
 
 ---
 
-## 👥 Tim
 
-*(Tambahkan nama anggota tim di sini)*
 
 | Nama | NIM | Role |
 |------|-----|------|
